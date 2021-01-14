@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AnyLocalize Dashboard</title>
+<link href="stylesheets/style.css" rel="stylesheet" type="text/css">
+<script src="javascripts/axios.js"></script>
+<script src="javascripts/vue.global.js"></script>
+<script src="javascripts/vue-router.global.js"></script>
+</head>
+
+<body>
+	<div id="app">
+		<div class="leftMenu">
+			<div class="leftMenuCreate"><router-link to="/create" class="leftMenuCreateLink" @click="createProject()">+Create project</router-link></div>
+			<br>
+			<%- leftMenuContent %>
+		</div>
+		<div class="appView">
+			<div id="translateUserCon" class="translateUserCon">
+				<div class="translateTitle">
+					{{translateTitle}}
+				</div>
+				<br>
+				<div class="translateKeyBox">
+					<a id="translateSource" class="translateKeySource">{{translateSource}}</a>
+				</div>
+				<br>
+				<div class="translateValueBox">
+					<input v-model="translationLocalized" name="translateLocalized" class="translateValueInput" type="text" placeholder="Translation goes here"/>
+				</div>
+				<br>
+				<div class="translateControlArea">
+					<a class="translateControlButton" @click="openFile(currentFile,true)">Skip</a>
+					<a class="translateControlButton" @click="translateNext(currentFile,trObj,translationLocalized)">OK</a>
+					<a class="translateControlButton" :style="{display: downloadButtonAvalible}" @click="downloadFile(currentFile)">Download</a>
+				</div>
+			</div>
+			<router-view></router-view>
+		</div>
+	</div>
+	<script type="module">
+		import VueTemplate from'./javascripts/index.js';
+		
+		const router = new VueRouter.createRouter({
+			history:VueRouter.createWebHashHistory(),
+			routes:[
+				{path:'/',component:{template:'<div></div>'}},
+				{path:'/create',component:{template:VueTemplate.createProject}}
+			]
+		})
+		
+		if(location.hash == '#/create'){
+		   translateUserCon.style.display = 'none';
+		 }
+		
+		var app = Vue.createApp({
+			data(){
+				return{
+					translateTitle:'Translate',
+					translateSource:'Text will appear at here.',
+					trObj:{},
+					currentFile:'',
+					translationLocalized:'',
+					downloadButtonAvalible:'none'
+				}
+			},
+			methods:{
+				openFile(fname,isForce){
+					translateUserCon.style.display = 'block';
+					if(vm.currentFile == fname && !isForce || vm.currentFile == '' && isForce || vm.trObj.line == -1 && isForce){
+					 	return;  
+					}
+					vm.downloadButtonAvalible = 'none'
+					axios.post('/translate',{reqFile:fname,reqType:0})
+					.then(function(res){
+						vm.trObj = res.data;
+						if(vm.trObj.line == -1){
+							vm.downloadButtonAvalible = 'inline-block'
+						}
+						vm.translateSource = vm.trObj.translateSource;
+						vm.currentFile = fname;
+					})
+				},
+				translateNext(fname,tNtrObj,localized){
+					if(localized == '' || vm.currentFile == ''){
+					   return;
+					}
+					vm.downloadButtonAvalible = 'none'
+					axios.post('/translate',{reqFile:fname,reqType:1,reqPhrase:localized,reqLine:tNtrObj.line})
+					.then(function(res){
+						vm.trObj = res.data;
+						if(vm.trObj.line == -1){
+							vm.downloadButtonAvalible = 'inline-block'
+							return;
+						}
+						vm.translateSource = vm.trObj.translateSource;
+						vm.currentFile = fname;
+						translateLocalized = '';
+					})
+				},
+				downloadFile(fname){
+					axios.post('/translate',{reqFile:fname,reqType:2},{responseType:'blob'})
+					.then(function(res){
+						var blob = res.data;
+						var reader = new FileReader();
+						reader.readAsDataURL(blob);
+						reader.onload = function(e){
+							var a = document.createElement('a');
+							var fileName = res.headers['content-disposition'].split("=");
+							fileName = fileName[fileName.length - 1];
+							fileName = fileName.replace(/"/g,"");
+							a.download = fileName;
+							a.href = e.target.result;
+							document.body.appendChild(a);
+							a.click();
+							document.body.removeChild(a);
+						}
+					})
+				},
+				createProject(){
+					translateUserCon.style.display = 'none';
+				}
+			}
+		})
+		app.use(router)
+		var vm = app.mount('#app')
+
+	</script>
+	<script>
+		//function openFile(fname){
+		//	if(currentFile == fname){
+		//	 	return;  
+		//	}
+		//	axios.post('/translate',{reqFile:fname,reqType:0})
+		//	.then(function(res){
+		//		trObj = res.data;
+		//		translateSource.innerHTML = trObj.translateSource;
+		//		currentFile = fname;
+		//	})
+		//}
+		//function translateNext(fname,tNtrObj,localized){
+		//	if(localized == ''){
+		//	   return;
+		//	}
+		//	axios.post('/translate',{reqFile:fname,reqType:1,reqPhrase:localized,reqLine:tNtrObj.line})
+		//	.then(function(res){
+		//		trObj = res.data;
+		//		if(trObj.line == -1){
+		//		   return;
+		//		}
+		//		translateSource.innerHTML = trObj.translateSource;
+		//		currentFile = fname;
+		//		translateLocalized.value = '';
+		//	})
+		//}
+	</script>
+</body>
+</html>

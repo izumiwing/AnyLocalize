@@ -1,0 +1,185 @@
+html,body {
+	margin:0;
+	padding:0;
+	font: 14px Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+	width:100%;
+	height:100%;
+}
+h1{
+	font-size:36px;
+}
+a {
+	color: #000;
+	font-size:18px;
+}
+
+.leftMenu{
+	width:172px;
+	height:100%;
+	background-color:#EEE;
+	position:absolute;
+	transition:width 0.1s ease-in-out;
+	overflow-x:hidden;
+	overflow-y:scroll;
+}
+.leftMenu:hover{
+	width:172px;
+}
+.leftMenuOpt{
+	margin:4px 8px;
+	padding:2px;
+	border:2px solid #0099CC;
+	border-radius:5px;
+	color:#0099CC;
+	text-align:right;
+	line-height:32px;
+	transition:background-color 0.1s ease-in-out;
+}
+.leftMenuOpt:hover{
+	background-color:#FFF;
+}
+.leftMenuLink{
+	text-decoration:none;
+	color:#0099CC;
+}
+.appView{
+	padding-left:172px;
+	height:100%;
+	text-align:center;
+	overflow-y:scroll;
+}
+#app{
+	height:100%;
+}
+.createTitle{
+	padding:12px 24px;
+}
+.createOptions{
+	width:512px;
+	margin:0 auto;
+	text-align:left;
+}
+.optionBox{
+	background-color:#EEE;
+	padding:8px;
+	margin:8px;
+}
+.leftMenuCreate{
+	margin:8px;
+	padding:4px;
+	height:32px;
+	border:2px solid #0099CC;
+	border-radius:5px;
+	color:#0099CC;
+	text-align:center;
+	line-height:32px;
+	transition:background-color,color 0.1s ease-in-out;
+}
+.leftMenuCreate:hover{
+	background-color:#0099CC;
+	color:#FFF;
+}
+.optionList{
+	border-bottom:2px solid #0099CC;
+	padding:4px;
+	margin:4px;
+	height:32px;
+	line-height:32px;
+}
+.optionInputText{
+	margin:0;
+	padding:4px;
+	height:20px;
+	float:right;
+}
+.formList{
+	display:inline-block;
+	float:right;
+}
+.formButton{
+	border:2px solid #0099CC;
+	border-radius:5px;
+	padding:0 10px;
+	height:32px;
+	line-height:32px;
+	background-color:#FFF;
+	color:#0099CC;
+	font-size:16px;
+}
+.submitBox{
+	text-align:center;
+}
+.leftMenuCreateLink{
+	color:#0099CC;
+	text-decoration:none;
+}
+.leftMenuCreate:hover .leftMenuCreateLink{
+	color:#FFF;
+}
+.translateUserCon{
+	padding:32px;
+}
+.translateTitle{
+	text-align:left;
+	font-size:48px;
+	font-weight:bold;
+	padding:16px 0;
+}
+.translateKeyBox{
+	padding:16px;
+	background-color:#EEE;
+	text-align:left;
+	border:1px solid #EEE;
+	border-radius:10px;
+}
+.translateKeySource{
+	font-size:32px;
+	font-weight:bold;
+	border-bottom:4px solid #0099CC;
+}
+.translateValueBox{
+	padding:16px;
+	background-color:#EEE;
+	text-align:center;
+	border:1px solid #EEE;
+	border-radius:10px;
+}
+.translateValueInput{
+	border:none;
+	background-color:#EEE;
+	font-size:32px;
+	text-align:center;
+	width:100%;
+}
+.translateValueInput:hover{
+	outline:none;
+}
+.translateValueInput:focus{
+	outline:none;
+}
+.translateControlArea{
+	padding:16px;
+	text-align:center;
+	border-radius:10px;
+}
+.translateControlButton{
+	height:32px;
+	background-color:#EEE;
+	font-size:32px;
+	padding:8px;
+	border:1px solid #EEE;
+	border-radius:10px;
+	margin:0 8px;
+	transition:background-color 0.1s ease-in-out;
+}
+.translateControlButton:hover{
+	background-color:#DDD;
+}
+.leftMenuWarning{
+	margin:8px;
+	padding:4px;
+	border:2px solid #FF6666;
+	border-radius:5px;
+	color:#FF6666;
+	text-align:center;
+}
