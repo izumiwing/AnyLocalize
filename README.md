@@ -9,6 +9,7 @@ The excellent localize tools for both person and team.Explorer the fun of transl
 2.特性介绍
 
 # AnyLocalize 使用
+AnyLocalize 基于 Express 开发，前端则使用Vue.js 3.0 + router SPA 应用。但是还有许多部分并未完全迁移至Vue SPA，若感兴趣，可以完善pr，不甚感激。AnyLocalize使用基本只需要安装依赖后，确保根目录对node是可读写的即可。
 
 ## 安装起步
 ```
@@ -66,6 +67,7 @@ Please type the third phrase:输入第三行你要翻译的字符，来检测你
 若翻译流全部完成后，会自动将翻译流整合成原本导入的文件，并在下方会有Download按钮（与OK，Skip在同一行）即可下载翻译过后的原始文件。
 
 # AnyLocalize 特性
+其中包含了不少对于未来的期望，也希望更多翻译爱好者与翻译工作者的加入，也十分感谢所有汉化组的辛勤付出，包括我以内，更好的完善翻译流程。
 
 ## AnyLocalize 广泛通用
 你可以导入任意文件来体验最佳的汉化翻译流程，你只需要选择合适的选项，填入一些关于汉化文件的格式问题（如：每个需要翻译的文本前方出现了什么字符）即可体验可视化的翻译流程。不管是需要翻译音乐歌词（*.lrc）还是游戏汉化（*.locale，*.locres），只需要导出成能正常查看编辑的文件，导入AnyLocalize，就可以进一步体验完美的翻译过程。
