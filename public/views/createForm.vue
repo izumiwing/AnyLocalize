@@ -74,6 +74,11 @@
 			</div>
 			<a>*Note: Entering the first 3 phrases you wanna translate properly to make sure we are working properly.</a>
 		</div>
+		<div class="optionBox">
+			<div class="optionList">
+				Toekn<input name="token" type="text" class="optionInputText"/>
+			</div>
+		</div>
 		<div class="submitBox">
 			<input class="formButton" type="submit" value="提交"/>
 		</div>

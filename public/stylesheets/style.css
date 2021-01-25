@@ -117,6 +117,7 @@ a {
 	color:#FFF;
 }
 .translateUserCon{
+	display:none;
 	padding:32px;
 }
 .translateTitle{
@@ -182,4 +183,28 @@ a {
 	border-radius:5px;
 	color:#FF6666;
 	text-align:center;
+}
+.leftMenuUser{
+	margin:8px;
+	padding:4px;
+}
+.loginInput{
+	border:none;
+	background-color:#DDD;
+	outline:none;
+	width:128px;
+	font-size:16px;
+}
+.loginButton{
+	border:2px solid #0099CC;
+	border-radius:5px;
+	font-size:14px;
+	color:#0099CC;
+	text-align:center;
+}
+.userInfo{
+	font-size:18px;
+	text-align:center;
+	word-break:break-all;
+	word-wrap:break-word;
 }

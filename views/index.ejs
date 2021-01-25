@@ -12,18 +12,26 @@
 <body>
 	<div id="app">
 		<div class="leftMenu">
-			<div class="leftMenuCreate"><router-link to="/create" class="leftMenuCreateLink" @click="createProject()">+Create project</router-link></div>
+			<div id="leftMenuUser" class="leftMenuUser">
+				<div id="leftMenuUserLogin">
+					<input type="text" id="username" placeholder="user" class="loginInput" />
+					<input type="password" id="password" placeholder="password" class="loginInput" />
+					<div class="loginButton" @click="loginAuth()">登录</div>
+				</div>
+				<div id="userInfo" class="userInfo"></div>
+			</div>
+			<div class="leftMenuCreate"><router-link to="/create" @click="createProject()" class="leftMenuCreateLink">+Create project</router-link></div>
 			<br>
 			<%- leftMenuContent %>
 		</div>
 		<div class="appView">
-			<div id="translateUserCon" class="translateUserCon">
+			<div :style="{display:dispApp}" class="translateUserCon">
 				<div class="translateTitle">
 					{{translateTitle}}
 				</div>
 				<br>
 				<div class="translateKeyBox">
-					<a id="translateSource" class="translateKeySource">{{translateSource}}</a>
+					<a id="translateSource" class="translateKeySource" @dblclick="translate('auto','zh-CN')">{{translateSource}}</a>
 				</div>
 				<br>
 				<div class="translateValueBox">
@@ -42,6 +50,10 @@
 	<script type="module">
 		import VueTemplate from'./javascripts/index.js';
 		
+		const componentUserControl = {
+			template:VueTemplate.userControl,
+		}
+		
 		const router = new VueRouter.createRouter({
 			history:VueRouter.createWebHashHistory(),
 			routes:[
@@ -50,33 +62,34 @@
 			]
 		})
 		
-		if(location.hash == '#/create'){
-		   translateUserCon.style.display = 'none';
-		 }
-		
 		var app = Vue.createApp({
 			data(){
-				return{
-					translateTitle:'Translate',
-					translateSource:'Text will appear at here.',
-					trObj:{},
-					currentFile:'',
-					translationLocalized:'',
-					downloadButtonAvalible:'none'
-				}
-			},
+					return{
+						translateTitle:'Translate',
+						translateSource:'Text will appear at here.',
+						trObj:{},
+						currentFile:'',
+						translationLocalized:'',
+						downloadButtonAvalible:'none',
+						dispApp:'none',
+						token:''
+					}
+				},
 			methods:{
 				openFile(fname,isForce){
-					translateUserCon.style.display = 'block';
+					vm.dispApp = 'block';
 					if(vm.currentFile == fname && !isForce || vm.currentFile == '' && isForce || vm.trObj.line == -1 && isForce){
 					 	return;  
 					}
 					vm.downloadButtonAvalible = 'none'
-					axios.post('/translate',{reqFile:fname,reqType:0})
+					axios.post('/translate',{reqFile:fname,reqType:0,token:vm.token})
 					.then(function(res){
 						vm.trObj = res.data;
 						if(vm.trObj.line == -1){
 							vm.downloadButtonAvalible = 'inline-block'
+						}
+						if(res.data.status == "retry"){
+							vm.openFile(fname,isForce);
 						}
 						vm.translateSource = vm.trObj.translateSource;
 						vm.currentFile = fname;
@@ -87,7 +100,7 @@
 					   return;
 					}
 					vm.downloadButtonAvalible = 'none'
-					axios.post('/translate',{reqFile:fname,reqType:1,reqPhrase:localized,reqLine:tNtrObj.line})
+					axios.post('/translate',{reqFile:fname,reqType:1,reqPhrase:localized,reqLine:tNtrObj.line,token:vm.token})
 					.then(function(res){
 						vm.trObj = res.data;
 						if(vm.trObj.line == -1){
@@ -96,11 +109,11 @@
 						}
 						vm.translateSource = vm.trObj.translateSource;
 						vm.currentFile = fname;
-						translateLocalized = '';
+						vm.translationLocalized = '';
 					})
 				},
 				downloadFile(fname){
-					axios.post('/translate',{reqFile:fname,reqType:2},{responseType:'blob'})
+					axios.post('/translate',{reqFile:fname,reqType:2,token:vm.token},{responseType:'blob'})
 					.then(function(res){
 						var blob = res.data;
 						var reader = new FileReader();
@@ -118,42 +131,45 @@
 						}
 					})
 				},
+				translate(source, target){
+					var text = window.getSelection();
+					var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + source + '&tl=' + target + '&dt=t&q=' + text;
+					axios.get(url)
+					.then(function(res){
+						var raw = res.data[0][0][0];
+						var result = raw;
+						console.log(raw);
+					})
+				},
+				loginAuth(){
+					var loginUser = document.getElementById("username").value;
+					var loginPass = document.getElementById("password").value;
+					axios.post('/users',{user:loginUser,passwd:loginPass})
+					.then(function(res){
+						if(res.data.token != undefined){
+							leftMenuUserLogin.style.display = "none";
+							userInfo.innerHTML = "Token：<br>" + res.data.token
+							vm.token = res.data.token;
+						}else{
+							document.getElementById("password").value = "";
+							document.getElementById("password").placeholder = "账号/密码错误";
+							
+						}
+
+					})
+				},
 				createProject(){
-					translateUserCon.style.display = 'none';
+					axios.post('/createProject/Upload',{})
+					.then(function(res){
+						
+					})
+					vm.dispApp = 'none';
 				}
 			}
 		})
+		
 		app.use(router)
 		var vm = app.mount('#app')
-
-	</script>
-	<script>
-		//function openFile(fname){
-		//	if(currentFile == fname){
-		//	 	return;  
-		//	}
-		//	axios.post('/translate',{reqFile:fname,reqType:0})
-		//	.then(function(res){
-		//		trObj = res.data;
-		//		translateSource.innerHTML = trObj.translateSource;
-		//		currentFile = fname;
-		//	})
-		//}
-		//function translateNext(fname,tNtrObj,localized){
-		//	if(localized == ''){
-		//	   return;
-		//	}
-		//	axios.post('/translate',{reqFile:fname,reqType:1,reqPhrase:localized,reqLine:tNtrObj.line})
-		//	.then(function(res){
-		//		trObj = res.data;
-		//		if(trObj.line == -1){
-		//		   return;
-		//		}
-		//		translateSource.innerHTML = trObj.translateSource;
-		//		currentFile = fname;
-		//		translateLocalized.value = '';
-		//	})
-		//}
 	</script>
 </body>
 </html>

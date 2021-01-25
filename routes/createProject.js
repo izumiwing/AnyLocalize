@@ -5,7 +5,7 @@ var fs = require('fs');
 var readLine = require("readline");
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
-
+var userAuth = {};
 
 var storage = multer.diskStorage({
 	destination: './config/source/',
@@ -17,6 +17,21 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 
 router.post('/upload',upload.single('file'),function(req,res,next){
+	if (userAuth.adminToken == undefined){
+		fs.readFile(".\\config\\token.json",'utf8',(err,data) => {
+			if(err){
+				throw new Error('token.json cannot be found or read.Please check your filesystem.');
+			}
+			userAuth = eval('(' + data + ')');
+		});
+	}
+	if (userAuth.adminToken != req.body.token || req.body.token == undefined){
+		if(userAuth.adminToken == undefined){
+			res.end(JSON.stringify({status:"retry"}));
+		}else{
+			res.end(JSON.stringify({status:"error"}));
+		}
+	}
 	var formObj = req.body;
 	var AnyJSON_Mode = formObj.mode;
 	switch(AnyJSON_Mode){

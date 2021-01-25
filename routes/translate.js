@@ -6,6 +6,7 @@ var FileNameList = {};
 var TranslateProg = {};
 var TranslateFlow = {};
 var FlowIsTidy = true;
+var userAuth = {};
 
 var readLine = require("readline");
 var events = require('events');
@@ -40,6 +41,21 @@ fs.readFile(".\\config\\dashboard.json",'utf8',(err,data) => {
 });
 
 router.post('/',function(req,res,next){
+	if (userAuth.userToken == undefined){
+		fs.readFile(".\\config\\token.json",'utf8',(err,data) => {
+			if(err){
+				throw new Error('token.json cannot be found or read.Please check your filesystem.');
+			}
+			userAuth = eval('(' + data + ')');
+		});
+	}
+	if (userAuth.userToken != req.body.token && userAuth.adminToken != req.body.token || req.body.token == undefined){
+		if(userAuth.userToken == undefined){
+			res.end(JSON.stringify({status:"retry"}));
+		}else{
+			res.end(JSON.stringify({status:"error"}));
+		}
+	}
 	var reqFile = req.body.reqFile;
 	var reqType = req.body.reqType;
 	var PkgSend = {};
