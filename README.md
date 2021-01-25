@@ -10,6 +10,7 @@ The excellent localize tools for both person and team.Explorer the fun of transl
 
 # AnyLocalize 使用
 AnyLocalize 基于 Express 开发，前端则使用Vue.js 3.0 + router SPA 应用。但是还有许多部分并未完全迁移至Vue SPA，若感兴趣，可以完善pr，不甚感激。AnyLocalize使用基本只需要安装依赖后，确保根目录对node是可读写的即可。
+（注意：本项目可能长期不更新，由于作者打算迁移至webpack开发，该项目的许多实现原理并不适合学习，尤其是Vue 与 native js 耦合。）
 
 ## 安装起步
 ```
@@ -55,6 +56,17 @@ Please type the third phrase:输入第三行你要翻译的字符，来检测你
 当完成配置点击Submit后，会跳出"submitted"，然后手动返回一下刷新（在之后的版本会改进这一设计）。若配置无误，并且文件确实符合脚本运行规律，就会被添加到左方文件菜单中。
 
 ## 开始翻译
+
+在翻译开始，防止一些恶意者滥用，将使用用户登录返回Token的方式确认身份。在config/users.json会有如下：
+``
+{
+  "admin":{           //用作登录
+    password:"admin", //用作密码
+    isAdmin:true      //是否为管理员
+  }
+}
+``
+十分简单的编辑方式，若需要添加另一个用户，复制粘贴为另一个json对象即可。之后在网页中左上方看到用户登录和密码输入的地方。
 
 此时点击左方刚刚添加的文件。若正常配置，则就已经开始了翻译流程。此处可以看到：页面交互的地方 深蓝下划线 上的语句，便是你需要翻译成你所需要的语言的语句，在下方的"Translation goes here"提示符输入框中输入你翻译后的结果，点击下方OK即可提交给服务器。若此时不确定此处的具体意思，可以先点击Skip之后，它会被重新加入到翻译流的最后，直到有人对此句点击OK。
 
